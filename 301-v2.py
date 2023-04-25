@@ -3,16 +3,15 @@ import requests
 from concurrent.futures import ThreadPoolExecutor
 import tldextract
 
-
 print('''\
-                                                                                    
-                                                                                    
-██████╗  ██████╗  ██╗      ██╗   ██╗██████╗ 
-╚════██╗██╔═████╗███║      ██║   ██║╚════██╗
- █████╔╝██║██╔██║╚██║█████╗██║   ██║ █████╔╝
- ╚═══██╗████╔╝██║ ██║╚════╝╚██╗ ██╔╝██╔═══╝ 
-██████╔╝╚██████╔╝ ██║       ╚████╔╝ ███████╗
-╚═════╝  ╚═════╝  ╚═╝        ╚═══╝  ╚══════╝
+
+
+██████╗  ██████╗  ██╗
+╚════██╗██╔═████╗███║
+ █████╔╝██║██╔██║╚██║
+ ╚═══██╗████╔╝██║ ██║
+██████╔╝╚██████╔╝ ██║
+╚═════╝  ╚═════╝  ╚═╝
                      @github.com/Fla4sh
                      @twitter : fla4sh403\
 ''')
@@ -25,9 +24,6 @@ parser.add_argument('-t', '--threads', type=int, default=10, help='the number of
 parser.add_argument('-r', '--redirects', type=int, default=5, help='the maximum number of redirects to follow (default: 5)')
 parser.add_argument('-x', '--invalid', type=str, default='invalid_domains.txt', help='the path to the invalid output file (default: invalid_domains.txt)')
 args = parser.parse_args()
-
-with open(args.input_file, 'r', encoding='utf-8') as file:
-    urls = [line.strip() for line in file if line.strip()]
 
 def check_redirect(url):
     try:
@@ -43,16 +39,16 @@ def check_redirect(url):
             if final_url.startswith(('http', 'https')) and final_domain != initial_domain:
                 if tldextract.extract(final_url).suffix is not None:
                     print(f"The URL {url} redirected {num_redirects} times to {final_url}")
-                    with open(args.output, "a+") as file:
-                        file.write(f"{url} redirected {num_redirects} times to {final_url}\n")
-                        file.write(f"Initial domain: {initial_domain}\n")
-                        file.write(f"Final domain: {final_domain}\n\n")
+                    with open(args.output, "a") as valid_file:
+                        valid_file.write(f"{url} redirected {num_redirects} times to {final_url}\n")
+                        valid_file.write(f"Initial domain: {initial_domain}\n")
+                        valid_file.write(f"Final domain: {final_domain}\n\n")
                 else:
                     print(f"The URL {url} redirected to an invalid domain")
-                    with open(args.invalid, "a+") as file:
-                        file.write(f"{url} redirected {num_redirects} times to {final_url}\n")
-                        file.write(f"Initial domain: {initial_domain}\n")
-                        file.write(f"Final domain: {final_domain}\n\n")
+                    with open(args.invalid, "a") as invalid_file:
+                        invalid_file.write(f"{url} redirected {num_redirects} times to {final_url}\n")
+                        invalid_file.write(f"Initial domain: {initial_domain}\n")
+                        invalid_file.write(f"Final domain: {final_domain}\n\n")
             else:
                 print(f"The URL {url} redirected {num_redirects} times to the same domain ({initial_domain})")
         else:
@@ -61,5 +57,8 @@ def check_redirect(url):
         print(f"Error occurred while checking URL: {url}")
         print(e)
 
-with ThreadPoolExecutor(max_workers=args.threads) as executor:
-    results = executor.map(check_redirect, urls)
+with open(args.output, "w") as valid_file, open(args.invalid, "w") as invalid_file, open(args.input_file, 'r', encoding='utf-8') as input_file:
+    urls = [line.strip() for line in input_file if line.strip()]
+
+    with ThreadPoolExecutor(max_workers=args.threads) as executor:
+        results = executor.map(check_redirect, urls)
