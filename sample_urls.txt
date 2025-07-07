@@ -1,0 +1,5 @@
+https://httpbin.org/redirect-to?url=https://example.com
+https://httpbin.org/redirect/2
+https://www.python.org/about/
+https://httpbin.org/status/404
+https://invalid.domain.test/page

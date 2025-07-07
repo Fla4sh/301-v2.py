@@ -1,2 +1,7 @@
-requests
-tldextract
+# Core dependencies
+requests>=2.31.0    # HTTP library with excellent redirect handling
+tldextract>=5.0.1   # Reliable domain extraction from URLs
+tqdm>=4.65.0        # Progress bar for URL processing
+
+# Type hints support
+typing-extensions>=4.7.1  # Enhanced typing support for Python < 3.10
