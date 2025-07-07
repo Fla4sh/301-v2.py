@@ -35,7 +35,7 @@ URL Redirect Inspector is a powerful tool that analyzes HTTP redirects in bulk, 
 
 1. Clone the repository:
 ```bash
-git clone [<repository-url>](https://github.com/Fla4sh/301-v2.py.git)
+git clone [<repository-url>]
 cd 301-v2.py
 ```
 
